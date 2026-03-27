@@ -74,3 +74,22 @@ export const products = [
     stock: 30,
   },
 ];
+
+export const mockCartItems = [
+  {
+    id: 1,
+    productId: 1,
+    name: 'Margherita Pizza',
+    price: 299,
+    quantity: 2,
+    imageUrl: '/assets/pizza.png',
+  },
+  {
+    id: 2,
+    productId: 3,
+    name: 'Classic Coke',
+    price: 45,
+    quantity: 3,
+    imageUrl: '/assets/drinks.png',
+  },
+];
