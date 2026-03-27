@@ -1,11 +1,23 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { products } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { dispatch } = useAppContext();
   const product = products.find(p => p.id === parseInt(id)) || products[0];
+  const [qty, setQty] = useState(1);
+
+  const handleAddToCart = () => {
+    dispatch({
+      type: 'ADD_TO_CART',
+      payload: { ...product, quantity: qty }
+    });
+    navigate('/cart');
+  };
 
   return (
     <div className="product-detail-wrapper">
@@ -35,11 +47,11 @@ const ProductDetail = () => {
           
           <div className="purchase-options">
             <div className="quantity-selector">
-              <button>-</button>
-              <span>1</span>
-              <button>+</button>
+              <button onClick={() => setQty(Math.max(1, qty - 1))}>-</button>
+              <span>{qty}</span>
+              <button onClick={() => setQty(qty + 1)}>+</button>
             </div>
-            <button className="add-to-cart-btn btn-primary" disabled={product.stock === 0}>
+            <button className="add-to-cart-btn btn-primary" disabled={product.stock === 0} onClick={handleAddToCart}>
               {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
             </button>
           </div>
