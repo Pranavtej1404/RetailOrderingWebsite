@@ -1,7 +1,7 @@
 package com.retail.app.controller;
 
+import com.retail.app.dto.ProductResponse;
 import com.retail.app.entity.Category;
-import com.retail.app.entity.Product;
 import com.retail.app.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +20,17 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public List<Product> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return productService.getProductById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping("/categories")
     public List<Category> getAllCategories() {
         return productService.getAllCategories();
