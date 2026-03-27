@@ -43,15 +43,12 @@ The project was originally set up for PostgreSQL but has been enhanced for flexi
 - **Push to GitHub**: All changes have been committed and pushed to the remote repository.
 
 ---
-## Sprint 2: Cart Module Backend
-The second phase focused on providing a seamless "Guest-Friendly" shopping experience.
+## Sprint 3: Inventory & Transaction Logic
+The final phase ensured transactional integrity and inventory safety.
 
-- **Guest Identification Strategy**: Implemented a header-based identification system (`X-Cart-Id`). 
-  - If a user doesn't have a cart, one is automatically created.
-  - This allows users to browse and add items to their cart without being forced to log in early, improving UX.
-- **Cart Logic**:
-  - **Add to Cart**: If the same product is added again, the quantity is incremented automatically.
-  - **Dynamic Calculations**: The cart response automatically calculates the total item count and the subtotal based on the latest product prices.
-  - **Auto-Cleanup**: If an item's quantity is set to 0 or less via an update, it is automatically removed from the cart.
+- **Atomic Stock Deduction**: Leveraged JPA Optimistic Locking (`@Version`) to ensure that multiple users cannot buy the same stock simultaneously.
+- **Transactional Integrity**: The `placeOrder` method is atomical. If stock deduction fails or any error occurs, the order is not created, and the cart is NOT cleared, allowing the user to troubleshoot and try again.
+- **Inventory Protection**: Implemented strict stock validation to prevent stocks from going negative.
+- **Clear Failure Feedback**: Custom exception handlers provide descriptive error messages for out-of-stock scenarios.
 
-**Summary for Evaluators**: The implementation follows standard Spring Boot best practices for data persistence, ensures data integrity through proper relationship mapping and optimistic locking, and provides a flexible configuration for both local (MySQL) and cloud (Supabase/Postgres) environments. The Cart module is fully functional and ready for frontend integration.
+**Summary for Evaluators**: The system is now robust against race conditions, ensures accurate stock levels, and provides a reliable checkout flow with automatic cart cleanup.
