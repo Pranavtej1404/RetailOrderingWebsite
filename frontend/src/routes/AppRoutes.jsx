@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import PrivateRoute from '../components/PrivateRoute';
 
 import Home from '../pages/Home';
 import Menu from '../pages/Menu';
@@ -17,10 +18,17 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Menu />} />
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
-      <Route path="/orders" element={<Orders />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/admin" element={<Admin />} />
+      
+      {/* Protected Endpoints */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/orders" element={<Orders />} />
+      </Route>
+
+      <Route element={<PrivateRoute requireAdmin />}>
+        <Route path="/admin" element={<Admin />} />
+      </Route>
     </Routes>
   );
 };
