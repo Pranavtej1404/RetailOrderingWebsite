@@ -4,6 +4,28 @@ import { mockOrders } from '../data/mockData';
 import '../components/orders/Orders.css';
 
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const data = await getOrders();
+        setOrders(data);
+      } catch (err) {
+        console.error('Failed to load orders:', err);
+        setError('Failed to load your orders. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+  }, []);
+
+  if (loading) return <div className="container mt-5">Loading orders...</div>;
+  if (error) return <div className="container mt-5" style={{ color: 'red' }}>{error}</div>;
+
   return (
     <div className="container orders-container">
       <h1>My Orders</h1>

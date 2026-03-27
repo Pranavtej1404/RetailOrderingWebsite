@@ -4,6 +4,51 @@ import { products } from '../data/mockData';
 import '../components/admin/Admin.css';
 
 const Admin = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await adminService.getAdminProducts();
+      setProducts(data);
+    } catch (err) {
+      console.error('Failed to load products for admin:', err);
+      setError('Failed to load products. You may not have administrative privileges.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const handleUpdateStock = async (id, currentStock) => {
+    const newStock = prompt(`Enter new stock quantity for Product ${id} (Current: ${currentStock}):`);
+    if (newStock === null || newStock === '') return;
+    try {
+      await adminService.updateStock(id, { stockQuantity: parseInt(newStock) });
+      await loadProducts(); // Refresh list
+    } catch (err) {
+      alert('Failed to update stock: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    try {
+      await adminService.deleteProduct(id);
+      setProducts(products.filter(p => p.id !== id));
+    } catch (err) {
+      alert('Failed to delete product: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  if (loading) return <div className="container mt-5">Loading Admin Dashboard...</div>;
+  if (error) return <div className="container mt-5" style={{ color: 'red' }}>{error}</div>;
+
   return (
     <div className="container admin-container">
       <div className="admin-header">
