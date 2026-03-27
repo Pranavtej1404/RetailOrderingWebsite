@@ -93,3 +93,28 @@ export const mockCartItems = [
     imageUrl: '/assets/drinks.png',
   },
 ];
+
+export const mockOrders = [
+  {
+    id: 'ORD-7721',
+    date: '2026-03-25T14:30:00',
+    total: 865,
+    status: 'DELIVERED',
+    address: '123, Jubilee Hills, Hyderabad',
+    items: [
+      { id: 1, name: 'Margherita Pizza', price: 299, quantity: 2 },
+      { id: 2, name: 'Classic Coke', price: 45, quantity: 3 }
+    ]
+  },
+  {
+    id: 'ORD-8109',
+    date: '2026-03-26T18:15:00',
+    total: 428,
+    status: 'IN_TRANSIT',
+    address: 'Flat 402, Sunshine Apts, Gachibowli',
+    items: [
+      { id: 3, name: 'Garlic Bread', price: 129, quantity: 1 },
+      { id: 4, name: 'Mountain Dew', price: 50, quantity: 2 }
+    ]
+  }
+];

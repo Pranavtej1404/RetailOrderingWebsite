@@ -10,6 +10,8 @@ import Orders from '../pages/Orders';
 import Login from '../pages/Login';
 import Admin from '../pages/Admin';
 
+import OrderConfirmation from '../pages/OrderConfirmation';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -18,6 +20,7 @@ const AppRoutes = () => {
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/order-confirmation" element={<OrderConfirmation />} />
       <Route path="/orders" element={<Orders />} />
       <Route path="/login" element={<Login />} />
       <Route path="/admin" element={<Admin />} />
