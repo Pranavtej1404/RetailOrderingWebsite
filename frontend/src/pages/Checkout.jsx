@@ -1,98 +1,140 @@
 import React, { useState } from 'react';
-import { useAppContext } from '../context/AppContext';
-import { placeOrder } from '../services/orderService';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
+import CartSummary from '../components/cart/CartSummary';
+import './Checkout.css';
 
 const Checkout = () => {
-  const { state, dispatch } = useAppContext();
-  const { cart } = state;
   const navigate = useNavigate();
-
-  const [address, setAddress] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-
+  const { state } = useAppContext();
+  const { cart } = state;
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!address) {
-      setError('Delivery address is required.');
-      return;
-    }
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: ''
+  });
 
-    try {
-      setLoading(true);
-      setError('');
-      
-      const payload = { 
-        address,
-        // Passing items explicitly in case the backend requires it since AppContext might not be synced
-        items: cart.map(item => ({ productId: item.id, quantity: item.quantity }))
-      };
-      
-      await placeOrder(payload);
-      
-      // Attempt to clear cart locally if we had a CLEAR_CART action, 
-      // but if not, we can just navigate away. Let's try sending it.
-      dispatch({ type: 'CLEAR_CART' });
-      
-      navigate('/orders');
-    } catch (err) {
-      console.error('Checkout error:', err);
-      setError('Checkout failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  if (cart.length === 0) {
-    return (
-      <div className="container mt-5">
-        <h2>Your cart is empty</h2>
-        <button className="btn-primary" onClick={() => navigate('/menu')}>Back to Menu</button>
-      </div>
-    );
-  }
+  const handlePlaceOrder = (e) => {
+    e.preventDefault();
+    // In Sprint 3, we just navigate to success page
+    navigate('/order-confirmation', { state: { orderId: 'ORD-' + Math.floor(Math.random() * 9000 + 1000) } });
+  };
 
   return (
-    <div className="container mt-5 checkout-page">
-      <h1>Checkout</h1>
-      
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      
-      <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem' }}>
-        <form onSubmit={handleSubmit} style={{ flex: 1 }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '.5rem' }}>Delivery Address:</label>
-            <textarea 
-              rows="4"
-              value={address} 
-              onChange={e => setAddress(e.target.value)} 
-              required 
-              style={{ width: '100%', padding: '0.8rem' }}
-              placeholder="123 Main St, Bangalore"
-            />
-          </div>
-          
-          <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Processing...' : 'Place Order'}
-          </button>
-        </form>
-        
-        <div style={{ flex: 1, padding: '1rem', border: '1px solid #ccc', borderRadius: '8px' }}>
-          <h3>Order Summary</h3>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {cart.map(item => (
-              <li key={item.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span>{item.quantity}x {item.name}</span>
-                <span>₹{item.price * item.quantity}</span>
-              </li>
-            ))}
-          </ul>
-          <hr />
-          <h4>Total: ₹{subtotal}</h4>
+    <div className="container checkout-container fade-in">
+      <div className="checkout-form-section">
+        <div className="checkout-section">
+          <h2><i className="fas fa-map-marker-alt"></i> Delivery Address</h2>
+          <form id="checkout-form" onSubmit={handlePlaceOrder}>
+            <div className="form-group">
+              <label>Full Name</label>
+              <input 
+                type="text" 
+                name="fullName" 
+                placeholder="Pranav Tej" 
+                required 
+                value={formData.fullName}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Email ID</label>
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="pranav@example.com" 
+                  required 
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Phone Number</label>
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  placeholder="+91 9876543210" 
+                  required 
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Address</label>
+              <textarea 
+                name="address" 
+                rows="3" 
+                placeholder="Street name, Apartment, Landmark" 
+                required
+                value={formData.address}
+                onChange={handleInputChange}
+              ></textarea>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>City</label>
+                <input 
+                  type="text" 
+                  name="city" 
+                  placeholder="Hyderabad" 
+                  required 
+                  value={formData.city}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label>Zip Code</label>
+                <input 
+                  type="text" 
+                  name="zipCode" 
+                  placeholder="500032" 
+                  required 
+                  value={formData.zipCode}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+          </form>
         </div>
+
+        <div className="checkout-section">
+          <h2><i className="fas fa-credit-card"></i> Payment Method</h2>
+          <div className="payment-options">
+            <div className="payment-card active">
+              <i className="fas fa-truck"></i>
+              <div className="info">
+                <h4>Cash on Delivery</h4>
+                <p>Pay when you receive your order</p>
+              </div>
+              <i className="fas fa-check-circle ms-auto" style={{color: 'var(--primary)'}}></i>
+            </div>
+            <div className="payment-card" style={{opacity: 0.5, cursor: 'not-allowed'}}>
+              <i className="fas fa-university"></i>
+              <div className="info">
+                <h4>Online Payment</h4>
+                <p>Temporarily unavailable</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="checkout-summary">
+        <CartSummary subtotal={subtotal} />
+        <button type="submit" form="checkout-form" className="btn-primary place-order-btn">
+          Place Order
+        </button>
       </div>
     </div>
   );

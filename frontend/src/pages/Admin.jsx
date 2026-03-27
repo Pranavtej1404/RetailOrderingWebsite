@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import * as adminService from '../services/adminProductService';
+import React from 'react';
+import ProductTable from '../components/admin/ProductTable';
+import { products } from '../data/mockData';
+import '../components/admin/Admin.css';
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -48,49 +50,39 @@ const Admin = () => {
   if (error) return <div className="container mt-5" style={{ color: 'red' }}>{error}</div>;
 
   return (
-    <div className="container mt-5 admin-page">
-      <h1>Admin Dashboard</h1>
-      <p>Management interface for administrators.</p>
-      
-      <table style={{ width: '100%', marginTop: '2rem', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ background: '#f5f5f5', textAlign: 'left' }}>
-            <th style={{ padding: '0.8rem', border: '1px solid #ddd' }}>ID</th>
-            <th style={{ padding: '0.8rem', border: '1px solid #ddd' }}>Name</th>
-            <th style={{ padding: '0.8rem', border: '1px solid #ddd' }}>Price</th>
-            <th style={{ padding: '0.8rem', border: '1px solid #ddd' }}>Stock</th>
-            <th style={{ padding: '0.8rem', border: '1px solid #ddd' }}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map(product => (
-            <tr key={product.id}>
-              <td style={{ padding: '0.8rem', border: '1px solid #ddd' }}>{product.id}</td>
-              <td style={{ padding: '0.8rem', border: '1px solid #ddd' }}>{product.name}</td>
-              <td style={{ padding: '0.8rem', border: '1px solid #ddd' }}>₹{product.price}</td>
-              <td style={{ padding: '0.8rem', border: '1px solid #ddd' }}>
-                <span className={product.stock === 0 ? 'out-of-stock' : ''}>{product.stock}</span>
-              </td>
-              <td style={{ padding: '0.8rem', border: '1px solid #ddd' }}>
-                <button 
-                  onClick={() => handleUpdateStock(product.id, product.stock)}
-                  className="btn-secondary"
-                  style={{ marginRight: '0.5rem', background: '#ccc', color: '#000', padding: '0.4rem 0.8rem' }}
-                >
-                  Update Stock
-                </button>
-                <button 
-                  onClick={() => handleDelete(product.id)}
-                  className="btn-secondary"
-                  style={{ background: '#ff4d4d', color: 'white', padding: '0.4rem 0.8rem', border: 'none' }}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container admin-container">
+      <div className="admin-header">
+        <h1>Inventory Management</h1>
+        <button className="btn-primary">
+          <i className="fas fa-plus"></i> Add New Product
+        </button>
+      </div>
+
+      <div className="admin-stats">
+        <div className="stat-card">
+          <div className="stat-icon"><i className="fas fa-box"></i></div>
+          <div className="stat-info">
+            <h3>{products.length}</h3>
+            <p>Total Products</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon" style={{background: 'rgba(76, 209, 55, 0.1)', color: '#4cd137'}}><i className="fas fa-shopping-bag"></i></div>
+          <div className="stat-info">
+            <h3>12</h3>
+            <p>Active Orders</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon" style={{background: 'rgba(156, 136, 255, 0.1)', color: '#9c88ff'}}><i className="fas fa-users"></i></div>
+          <div className="stat-info">
+            <h3>156</h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+      </div>
+
+      <ProductTable products={products} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { getOrders } from '../services/orderService';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import OrderCard from '../components/orders/OrderCard';
+import { mockOrders } from '../data/mockData';
+import '../components/orders/Orders.css';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -26,31 +27,21 @@ const Orders = () => {
   if (error) return <div className="container mt-5" style={{ color: 'red' }}>{error}</div>;
 
   return (
-    <div className="container mt-5 orders-page">
-      <h1>Your Orders</h1>
-      {orders.length === 0 ? (
-        <div>
-          <p>You haven't placed any orders yet.</p>
-          <Link to="/menu" className="btn-primary">Browse Menu</Link>
+    <div className="container orders-container">
+      <h1>My Orders</h1>
+      {mockOrders.length > 0 ? (
+        <div className="orders-list">
+          {mockOrders.map(order => (
+            <OrderCard key={order.id} order={order} />
+          ))}
         </div>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0, marginTop: '2rem' }}>
-          {orders.map(order => (
-            <li key={order.id} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem', borderRadius: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <strong>Order #{order.id}</strong>
-                <span style={{ padding: '0.2rem 0.5rem', background: '#e0e0e0', borderRadius: '4px' }}>
-                  {order.status || 'PROCESSING'}
-                </span>
-              </div>
-              <div>
-                <p style={{ margin: '0.2rem 0' }}><strong>Total:</strong> ₹{order.totalAmount || 0}</p>
-                <p style={{ margin: '0.2rem 0' }}><strong>Placed On:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
-                <p style={{ margin: '0.2rem 0' }}><strong>Address:</strong> {order.deliveryAddress}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="empty-orders glass center-text" style={{padding: '60px'}}>
+          <i className="fas fa-history" style={{fontSize: '60px', color: 'var(--border)', marginBottom: '20px', display: 'block'}}></i>
+          <h2>No Orders Yet</h2>
+          <p style={{marginBottom: '20px'}}>You haven't placed any orders with us yet.</p>
+          <a href="/menu" className="btn-primary">Order Now</a>
+        </div>
       )}
     </div>
   );
