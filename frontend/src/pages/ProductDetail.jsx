@@ -1,11 +1,21 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { products } from '../data/mockData';
+import { useCart } from '../context/CartContext';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const product = products.find(p => p.id === parseInt(id)) || products[0];
+  const navigate = useNavigate();
+  const product = products.find(p => p.id === parseInt(id));
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+
+  // If product not found from mockData, redirect or handle, but for now fallback to 0 isn't safe if we add to cart
+  if (!product) {
+    return <div className="container mt-5">Product not found <Link to="/menu">Go back</Link></div>;
+  }
 
   return (
     <div className="product-detail-wrapper">
@@ -35,12 +45,27 @@ const ProductDetail = () => {
           
           <div className="purchase-options">
             <div className="quantity-selector">
-              <button>-</button>
-              <span>1</span>
-              <button>+</button>
+              <button 
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                disabled={product.stock === 0}
+              >-</button>
+              <span>{quantity}</span>
+              <button 
+                onClick={() => setQuantity(q => q + 1)}
+                disabled={product.stock === 0}
+              >+</button>
             </div>
-            <button className="add-to-cart-btn btn-primary" disabled={product.stock === 0}>
-              {product.stock > 0 ? 'Add to Cart' : 'Sold Out'}
+            <button 
+              className="add-to-cart-btn btn-primary" 
+              disabled={product.stock === 0 || adding}
+              onClick={async () => {
+                setAdding(true);
+                await addToCart(product, quantity);
+                setAdding(false);
+                // navigate('/cart'); // Optional: redirect to cart after adding
+              }}
+            >
+              {product.stock === 0 ? 'Sold Out' : (adding ? 'Adding...' : 'Add to Cart')}
             </button>
           </div>
           
