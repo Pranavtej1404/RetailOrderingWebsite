@@ -104,6 +104,13 @@ public class CartService {
         return mapToCartResponse(cart);
     }
 
+    @Transactional
+    public void clearCart(String cartIdStr) {
+        Cart cart = getCartEntity(cartIdStr);
+        cart.getItems().clear();
+        cartRepository.save(cart);
+    }
+
     private Cart getCartEntity(String cartIdStr) {
         if (cartIdStr == null || cartIdStr.isEmpty()) {
             throw new RuntimeException("Cart ID is required");

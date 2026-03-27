@@ -7,7 +7,6 @@ public class OrderItemResponse {
     private String productName;
     private Integer quantity;
     private BigDecimal priceAtOrder;
-    private BigDecimal lineTotal;
 
     public OrderItemResponse() {
     }
@@ -42,13 +41,5 @@ public class OrderItemResponse {
 
     public void setPriceAtOrder(BigDecimal priceAtOrder) {
         this.priceAtOrder = priceAtOrder;
-    }
-
-    public BigDecimal getLineTotal() {
-        return lineTotal;
-    }
-
-    public void setLineTotal(BigDecimal lineTotal) {
-        this.lineTotal = lineTotal;
     }
 }

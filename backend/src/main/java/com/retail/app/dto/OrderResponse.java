@@ -2,13 +2,15 @@ package com.retail.app.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderResponse {
     private Long orderId;
     private String status;
     private BigDecimal totalAmount;
-    private String deliveryAddress;
-    private LocalDateTime createdAt;
+    private String address;
+    private LocalDateTime orderDate;
+    private List<OrderItemResponse> items;
 
     public OrderResponse() {
     }
@@ -37,19 +39,27 @@ public class OrderResponse {
         this.totalAmount = totalAmount;
     }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getOrderDate() {
+        return orderDate;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public List<OrderItemResponse> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItemResponse> items) {
+        this.items = items;
     }
 }
