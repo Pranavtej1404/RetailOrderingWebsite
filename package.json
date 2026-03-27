@@ -1,0 +1,13 @@
+{
+  "name": "retail-ordering-website",
+  "version": "1.0.0",
+  "description": "Full-stack Retail Ordering Website",
+  "scripts": {
+    "start:frontend": "npm start --prefix frontend",
+    "install:frontend": "npm install --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
