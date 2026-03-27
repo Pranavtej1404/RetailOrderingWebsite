@@ -1,16 +1,20 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/retail_db
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://localhost:3306/retail_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: Deeksha@182003
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-
 server:
   port: 8080
+
+app:
+  jwtSecret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  jwtExpirationMs: 86400000 # 24 hours
