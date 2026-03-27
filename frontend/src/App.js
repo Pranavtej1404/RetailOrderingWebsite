@@ -1,16 +1,25 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Menu from './pages/Menu';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { AppProvider } from './context/AppContext';
+import AppRoutes from './routes/AppRoutes';
+import Navbar from './components/Navbar';
+import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Menu />} />
-          <Route path="/menu" element={<Menu />} />
-        </Routes>
-      </div>
-    </Router>
+    <AppProvider>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <main>
+            <AppRoutes />
+          </main>
+          <footer className="container">
+            <p>&copy; 2026 Retail Ordering Website</p>
+          </footer>
+        </div>
+      </Router>
+    </AppProvider>
   );
 }
 

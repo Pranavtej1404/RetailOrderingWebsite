@@ -1,0 +1,48 @@
+.filter-sidebar {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  width: 280px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.filter-section {
+  margin-bottom: 30px;
+}
+
+.filter-section h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-section ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-section li {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.filter-section li:hover, .filter-section li.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.filter-section label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);
+}
