@@ -1,0 +1,140 @@
+.home-page-wrapper {
+  padding-bottom: 60px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 20px;
+  gap: 40px;
+  min-height: 80vh;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-content h1 {
+  font-size: 56px;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.hero-content h1 span {
+  color: var(--primary);
+}
+
+.hero-content p {
+  font-size: 18px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  max-width: 500px;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-secondary {
+  border: 2px solid var(--secondary);
+  padding: 10px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  display: inline-block;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+
+.section-title {
+  text-align: center;
+  margin: 80px 0 40px;
+  font-size: 32px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.category-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.category-card:hover {
+  background: white;
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.05);
+}
+
+.cat-img {
+  height: 180px;
+  margin-bottom: 20px;
+}
+
+.cat-img img {
+  height: 100%;
+  object-fit: contain;
+}
+
+.category-card h3 {
+  font-size: 20px;
+}
+
+.promo-banner {
+  margin-top: 100px;
+  padding: 60px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+}
+
+.promo-banner h2 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.promo-banner p {
+  margin-bottom: 30px;
+}
+
+/* Responsiveness */
+@media (max-width: 992px) {
+  .hero {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .hero-content h1 {
+    font-size: 40px;
+  }
+  .hero-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-btns {
+    justify-content: center;
+  }
+}
