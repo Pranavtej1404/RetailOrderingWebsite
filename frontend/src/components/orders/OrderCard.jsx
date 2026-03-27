@@ -19,8 +19,8 @@ const OrderCard = ({ order }) => {
     <div className="order-card fade-in">
       <div className="order-card-header">
         <div className="order-meta">
-          <span className="order-id">{order.id}</span>
-          <span className="order-date">{formatDate(order.date)}</span>
+          <span className="order-id">#{order.orderId || order.id}</span>
+          <span className="order-date">{formatDate(order.orderDate)}</span>
         </div>
         <div className={`status-badge ${order.status.toLowerCase()}`}>
           {order.status.replace('_', ' ')}
@@ -34,10 +34,10 @@ const OrderCard = ({ order }) => {
           </div>
           <div className="info-item">
             <span className="info-label">Total Amount</span>
-            <span className="info-value">₹{order.total}</span>
+            <span className="info-value">₹{order.totalAmount}</span>
           </div>
         </div>
-        <button 
+        <button
           className="btn-outline view-details-btn"
           onClick={() => setShowDetails(!showDetails)}
         >

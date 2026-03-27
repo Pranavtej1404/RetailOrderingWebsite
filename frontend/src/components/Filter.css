@@ -31,7 +31,8 @@
   transition: var(--transition);
 }
 
-.filter-section li:hover, .filter-section li.active {
+.filter-section li:hover,
+.filter-section li.active {
   color: var(--primary);
   font-weight: 600;
 }
@@ -45,4 +46,39 @@
 input[type="range"] {
   width: 100%;
   accent-color: var(--primary);
+}
+
+@media (max-width: 992px) {
+  .filter-sidebar {
+    width: 100%;
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .filter-section {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-sidebar {
+    gap: 20px;
+  }
+
+  .filter-section ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filter-section li {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
 }

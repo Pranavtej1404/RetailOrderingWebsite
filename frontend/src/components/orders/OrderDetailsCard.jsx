@@ -7,16 +7,16 @@ const OrderDetailsCard = ({ order }) => {
       <div className="order-items-list">
         <h4>Items Ordered</h4>
         {order.items.map(item => (
-          <div key={item.id} className="order-item-row">
+          <div key={item.productId} className="order-item-row">
             <div className="item-name-qty">
               <span className="item-qty">{item.quantity}x</span>
-              <span className="item-name">{item.name}</span>
+              <span className="item-name">{item.productName}</span>
             </div>
-            <span className="item-price">₹{item.price * item.quantity}</span>
+            <span className="item-price">₹{item.priceAtOrder * item.quantity}</span>
           </div>
         ))}
       </div>
-      
+
       <div className="delivery-info-block">
         <div className="address-section">
           <h4>Delivery Address</h4>

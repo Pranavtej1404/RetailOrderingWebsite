@@ -35,4 +35,9 @@ public class ProductController {
     public List<Category> getAllCategories() {
         return productService.getAllCategories();
     }
+
+    @GetMapping("/brands")
+    public List<com.retail.app.entity.Brand> getAllBrands() {
+        return productService.getAllBrands();
+    }
 }

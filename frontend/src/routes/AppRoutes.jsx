@@ -9,6 +9,7 @@ import Cart from '../pages/Cart';
 import Checkout from '../pages/Checkout';
 import Orders from '../pages/Orders';
 import Login from '../pages/Login';
+import Register from '../pages/Register';
 import Admin from '../pages/Admin';
 
 import OrderConfirmation from '../pages/OrderConfirmation';
@@ -20,11 +21,10 @@ const AppRoutes = () => {
       <Route path="/menu" element={<Menu />} />
       <Route path="/product/:id" element={<ProductDetail />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
       <Route path="/order-confirmation" element={<OrderConfirmation />} />
-      <Route path="/orders" element={<Orders />} />
       <Route path="/login" element={<Login />} />
-      
+      <Route path="/register" element={<Register />} />
+
       {/* Protected Endpoints */}
       <Route element={<PrivateRoute />}>
         <Route path="/checkout" element={<Checkout />} />

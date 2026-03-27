@@ -56,7 +56,6 @@ public class ProductService {
         product.setPrice(request.getPrice());
         product.setCategory(category);
         product.setBrand(brand);
-        product.setImageUrl(request.getImageUrl());
         product.setStockQuantity(request.getStockQuantity());
 
         return mapToResponse(productRepository.save(product));
@@ -78,7 +77,6 @@ public class ProductService {
         product.setPrice(request.getPrice());
         product.setCategory(category);
         product.setBrand(brand);
-        product.setImageUrl(request.getImageUrl());
         product.setStockQuantity(request.getStockQuantity());
 
         return mapToResponse(productRepository.save(product));
@@ -131,7 +129,6 @@ public class ProductService {
         response.setCategoryName(product.getCategory().getName());
         response.setBrandId(product.getBrand().getId());
         response.setBrandName(product.getBrand().getName());
-        response.setImageUrl(product.getImageUrl());
         response.setStockQuantity(product.getStockQuantity());
         response.setCreatedAt(product.getCreatedAt());
         return response;
@@ -139,5 +136,9 @@ public class ProductService {
 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    public List<Brand> getAllBrands() {
+        return brandRepository.findAll();
     }
 }

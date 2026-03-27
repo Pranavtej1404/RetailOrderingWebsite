@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import './Auth.css';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const from = location.state?.from || '/menu';
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       setError('');
-      await login(email, password);
-      navigate('/menu');
+      await login(username, password);
+      navigate(from, { replace: true });
     } catch (err) {
+      console.error('Login error:', err);
       setError('Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
@@ -25,34 +30,50 @@ const Login = () => {
   };
 
   return (
-    <div className="container mt-5 login-page">
-      <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleLogin} style={{ maxWidth: '400px', margin: '2rem 0' }}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem' }}>Email:</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={e => setEmail(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '0.8rem' }}
-          />
+    <div className="auth-page">
+      <div className="auth-card fade-in">
+        <div className="auth-header">
+          <h1>Welcome Back</h1>
+          <p>Login to your account to continue</p>
         </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '.5rem' }}>Password:</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={e => setPassword(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '0.8rem' }}
-          />
+
+        {error && (
+          <div className="error-message">
+            <i className="fas fa-exclamation-circle"></i>
+            {error}
+          </div>
+        )}
+
+        <form className="auth-form" onSubmit={handleLogin}>
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary auth-btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          Don't have an account? <Link to="/register">Create Account</Link>
         </div>
-        <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%' }}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

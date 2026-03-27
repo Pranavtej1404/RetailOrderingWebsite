@@ -14,7 +14,7 @@ const Navbar = () => {
         <Link to="/" className="logo">
           Retail<span>Order</span>
         </Link>
-        
+
         <div className={`nav-links-wrapper ${isMenuOpen ? 'open' : ''}`}>
           <ul className="nav-links">
             <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
@@ -26,7 +26,8 @@ const Navbar = () => {
               <i className="fas fa-shopping-cart"></i>
               <span className="cart-count">{cartCount}</span>
             </Link>
-            <Link to="/login" className="login-btn btn-primary" onClick={() => setIsMenuOpen(false)}>Login</Link>
+            <Link to="/login" className="login-btn" onClick={() => setIsMenuOpen(false)}>Login</Link>
+            <Link to="/register" className="register-btn btn-primary" onClick={() => setIsMenuOpen(false)}>Register</Link>
           </div>
         </div>
 

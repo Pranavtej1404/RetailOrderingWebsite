@@ -17,12 +17,15 @@ public class CartController {
 
     /**
      * Get or create a cart.
-     * Identification strategy: Use X-Cart-Id header. 
+     * Identification strategy: Use X-Cart-Id header.
      * If missing or invalid, a new cart will be created and returned with its ID.
      */
     @GetMapping
-    public ResponseEntity<CartResponse> getCart(@RequestHeader(value = "X-Cart-Id", required = false) String cartId) {
-        return ResponseEntity.ok(cartService.getOrCreateCart(cartId));
+    public ResponseEntity<CartResponse> getCart(
+            @RequestHeader(value = "X-Cart-Id", required = false) String cartId,
+            java.security.Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(cartService.getOrCreateCart(cartId, username));
     }
 
     /**
@@ -31,8 +34,10 @@ public class CartController {
     @PostMapping("/items")
     public ResponseEntity<CartResponse> addItem(
             @RequestHeader(value = "X-Cart-Id") String cartId,
-            @RequestBody AddCartItemRequest request) {
-        return ResponseEntity.ok(cartService.addToCart(cartId, request));
+            @RequestBody AddCartItemRequest request,
+            java.security.Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(cartService.addToCart(cartId, request, username));
     }
 
     /**
@@ -42,8 +47,10 @@ public class CartController {
     public ResponseEntity<CartResponse> updateItem(
             @RequestHeader(value = "X-Cart-Id") String cartId,
             @PathVariable Long itemId,
-            @RequestBody UpdateCartItemRequest request) {
-        return ResponseEntity.ok(cartService.updateQuantity(cartId, itemId, request));
+            @RequestBody UpdateCartItemRequest request,
+            java.security.Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(cartService.updateQuantity(cartId, itemId, request, username));
     }
 
     /**
@@ -52,7 +59,9 @@ public class CartController {
     @DeleteMapping("/items/{itemId}")
     public ResponseEntity<CartResponse> deleteItem(
             @RequestHeader(value = "X-Cart-Id") String cartId,
-            @PathVariable Long itemId) {
-        return ResponseEntity.ok(cartService.removeItem(cartId, itemId));
+            @PathVariable Long itemId,
+            java.security.Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(cartService.removeItem(cartId, itemId, username));
     }
 }

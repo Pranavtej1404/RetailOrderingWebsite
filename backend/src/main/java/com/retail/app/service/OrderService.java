@@ -1,11 +1,10 @@
 package com.retail.app.service;
 
 import com.retail.app.dto.OrderItemResponse;
-import com.retail.app.dto.OrderRequest;
+import com.retail.app.dto.PlaceOrderRequest;
 import com.retail.app.dto.OrderResponse;
 import com.retail.app.entity.*;
 import com.retail.app.exception.ConcurrentUpdateException;
-import com.retail.app.exception.EmptyCartException;
 import com.retail.app.exception.OutOfStockException;
 import com.retail.app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,30 +34,46 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CartService cartService;
 
     @Transactional
-    public OrderResponse placeOrder(String cartIdStr, OrderRequest request) {
+    public OrderResponse placeOrder(String cartIdStr, PlaceOrderRequest request, String username) {
         // 1. Fetch Cart
         Long cartId = Long.parseLong(cartIdStr);
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         if (cart.getItems().isEmpty()) {
-            throw new EmptyCartException("Cannot place order with an empty cart");
+            throw new RuntimeException("Cannot place order with empty cart");
+        }
+
+        // 3. Create Order
+        Order order = new Order();
+
+        // Use authenticated user if present, otherwise fallback to cart's user
+        if (username != null) {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            order.setUser(user);
+        } else {
+            order.setUser(cart.getUser());
         }
 
         // 2. Validate Stock and Deduct Atomically
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
 
+        // Prepare OrderItem
         for (CartItem cartItem : cart.getItems()) {
             Product product = cartItem.getProduct();
-            
+
             // Stock Validation
             if (product.getStockQuantity() < cartItem.getQuantity()) {
-                throw new OutOfStockException("Insufficient stock for product: " + product.getName() + 
-                    ". Available: " + product.getStockQuantity() + ", Requested: " + cartItem.getQuantity());
+                throw new OutOfStockException("Insufficient stock for product: " + product.getName() +
+                        ". Available: " + product.getStockQuantity() + ", Requested: " + cartItem.getQuantity());
             }
 
             // Deduct Stock
@@ -66,7 +81,8 @@ public class OrderService {
             try {
                 productRepository.save(product);
             } catch (OptimisticLockingFailureException e) {
-                throw new ConcurrentUpdateException("Concurrency conflict while updating stock for product: " + product.getName());
+                throw new ConcurrentUpdateException(
+                        "Concurrency conflict while updating stock for product: " + product.getName());
             }
 
             // Prepare OrderItem
@@ -80,14 +96,12 @@ public class OrderService {
             totalAmount = totalAmount.add(lineTotal);
         }
 
-        // 3. Create Order
-        Order order = new Order();
-        order.setUser(cart.getUser()); // Tie to user if cart is bound to user
-        order.setOrderDate(LocalDateTime.now());
+        // 3. Finalize Order fields
+        order.setCreatedAt(LocalDateTime.now());
         order.setStatus("PLACED");
         order.setTotalAmount(totalAmount);
-        order.setAddress(request.getAddress());
-        
+        order.setDeliveryAddress(request.getDeliveryAddress());
+
         final Order savedOrder = orderRepository.save(order);
 
         // 4. Save Order Items
@@ -102,14 +116,26 @@ public class OrderService {
         return mapToOrderResponse(savedOrder, orderItems);
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrdersByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        List<Order> orders = orderRepository.findByUserOrderByCreatedAtDesc(user);
+
+        return orders.stream()
+                .map(order -> mapToOrderResponse(order, order.getItems()))
+                .collect(Collectors.toList());
+    }
+
     private OrderResponse mapToOrderResponse(Order order, List<OrderItem> items) {
         OrderResponse response = new OrderResponse();
         response.setOrderId(order.getId());
         response.setStatus(order.getStatus());
         response.setTotalAmount(order.getTotalAmount());
-        response.setAddress(order.getAddress());
-        response.setOrderDate(order.getOrderDate());
-        
+        response.setAddress(order.getDeliveryAddress());
+        response.setOrderDate(order.getCreatedAt());
+
         List<OrderItemResponse> itemResponses = items.stream().map(item -> {
             OrderItemResponse ir = new OrderItemResponse();
             ir.setProductId(item.getProduct().getId());
@@ -118,7 +144,7 @@ public class OrderService {
             ir.setPriceAtOrder(item.getPriceAtOrder());
             return ir;
         }).collect(Collectors.toList());
-        
+
         response.setItems(itemResponses);
         return response;
     }

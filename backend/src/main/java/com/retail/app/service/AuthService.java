@@ -30,20 +30,27 @@ public class AuthService {
     private JwtUtils jwtUtils;
 
     public AuthResponse authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
 
-        User userDetails = (User) authentication.getPrincipal();
+            Object principal = authentication.getPrincipal();
+            if (!(principal instanceof User)) {
+                throw new RuntimeException("Error: Unexpected principal type: " + principal.getClass().getName());
+            }
+            User userDetails = (User) principal;
 
-        return new AuthResponse(
-                jwt,
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getRole()
-        );
+            return new AuthResponse(
+                    jwt,
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    userDetails.getRole());
+        } catch (Exception e) {
+            throw new RuntimeException("Authentication failed: " + e.getMessage());
+        }
     }
 
     public void registerUser(RegisterRequest registerRequest) {

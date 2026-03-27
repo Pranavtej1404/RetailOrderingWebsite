@@ -1,18 +1,38 @@
-import axiosInstance from './axios';
+import api from '../services/api';
 
 const AUTH_API = '/auth';
 
 const AuthService = {
-  login: async (email, password) => {
+  login: async (username, password) => {
     try {
-      const response = await axiosInstance.post(`${AUTH_API}/login`, { email, password });
+      const response = await api.post(`${AUTH_API}/login`, { username, password });
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        const user = {
+          username: response.data.username,
+          email: response.data.email,
+          role: response.data.role
+        };
+        localStorage.setItem('user', JSON.stringify(user));
       }
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  register: async (username, email, password) => {
+    try {
+      const response = await api.post(`${AUTH_API}/register`, {
+        username,
+        email,
+        password,
+        role: 'ROLE_USER' // Send as String, not Array
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     }
   },
@@ -23,7 +43,13 @@ const AuthService = {
   },
 
   getCurrentUser: () => {
-    return JSON.parse(localStorage.getItem('user'));
+    const userStr = localStorage.getItem('user');
+    if (!userStr || userStr === 'undefined') return null;
+    try {
+      return JSON.parse(userStr);
+    } catch (e) {
+      return null;
+    }
   },
 };
 

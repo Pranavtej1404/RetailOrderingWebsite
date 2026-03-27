@@ -1,10 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Cart.css';
 
-const CartSummary = ({ subtotal }) => {
+const CartSummary = ({ subtotal, showCheckoutButton = true }) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   const shipping = subtotal > 500 ? 0 : 50;
   const tax = Math.round(subtotal * 0.18);
   const total = subtotal + shipping + tax;
+
+  const handleProceedToCheckout = () => {
+    if (isAuthenticated) {
+      navigate('/checkout');
+    } else {
+      navigate('/login', { state: { from: '/cart' } });
+    }
+  };
 
   return (
     <div className="cart-summary glass fade-in">
@@ -29,9 +42,11 @@ const CartSummary = ({ subtotal }) => {
           <span>₹{total}</span>
         </div>
       </div>
-      <button className="checkout-btn btn-primary">
-        Proceed to Checkout
-      </button>
+      {showCheckoutButton && (
+        <button className="checkout-btn btn-primary" onClick={handleProceedToCheckout}>
+          Proceed to Checkout
+        </button>
+      )}
       <div className="security-badges">
         <p><i className="fas fa-lock"></i> Secure Checkout</p>
         <p><i className="fas fa-shield-alt"></i> Buyer Protection</p>

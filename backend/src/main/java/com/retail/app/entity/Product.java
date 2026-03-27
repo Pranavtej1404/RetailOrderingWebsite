@@ -30,9 +30,6 @@ public class Product implements Serializable {
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity;
 
@@ -96,14 +93,6 @@ public class Product implements Serializable {
 
     public void setBrand(Brand brand) {
         this.brand = brand;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public Integer getStockQuantity() {

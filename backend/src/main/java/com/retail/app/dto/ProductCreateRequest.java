@@ -22,7 +22,6 @@ public class ProductCreateRequest {
     @NotNull(message = "Brand ID is required")
     private Long brandId;
 
-    private String imageUrl;
 
     @NotNull(message = "Stock quantity is required")
     @PositiveOrZero(message = "Stock quantity cannot be negative")
@@ -69,13 +68,6 @@ public class ProductCreateRequest {
         this.brandId = brandId;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public Integer getStockQuantity() {
         return stockQuantity;

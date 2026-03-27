@@ -12,8 +12,8 @@ export const getOrderById = async (orderId) => {
   return response.data;
 };
 
-export const placeOrder = async (payload) => {
-  // payload: { address: '...', cartId: '...' } etc as expected by backend
-  const response = await api.post(ORDER_PREFIX, payload);
+export const placeOrder = async (payload, cartId) => {
+  const headers = cartId ? { 'X-Cart-Id': cartId } : {};
+  const response = await api.post(ORDER_PREFIX, payload, { headers });
   return response.data;
 };

@@ -1,26 +1,38 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppContext } from '../context/AppContext';
+import { addCartItem } from '../services/cartService';
 import './ProductCard.css';
 
-const ProductCard = ({ product }) => {
-  const { dispatch } = useAppContext();
-  const navigate = useNavigate();
+const IMAGE_MAP = {
+  'Pizza': '/assets/pizza.png',
+  'Cold Drinks': '/assets/drinks.png',
+  'Breads': '/assets/breads.png',
+  'default': '/assets/pizza.png'
+};
 
-  const handleAddToCart = (e) => {
+const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+  const cartId = localStorage.getItem('cartId');
+
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch({
-      type: 'ADD_TO_CART',
-      payload: { ...product, quantity: 1 }
-    });
-    navigate('/cart');
+    try {
+      const data = await addCartItem({ productId: product.id, quantity: 1 }, cartId);
+      if (data.cartId) {
+        localStorage.setItem('cartId', data.cartId);
+      }
+      navigate('/cart');
+    } catch (err) {
+      console.error('Failed to add item to cart:', err);
+      // Maybe show a toast or alert
+    }
   };
 
   return (
     <Link to={`/product/${product.id}`} className="product-card fade-in">
       <div className="product-image">
-        <img src={product.imageUrl} alt={product.name} />
-        <span className="stock-badge">{product.stock} in stock</span>
+        <img src={IMAGE_MAP[product.categoryName] || IMAGE_MAP['default']} alt={product.name} />
+        <span className="stock-badge">{product.stockQuantity || product.stock} in stock</span>
       </div>
       <div className="product-info">
         <h3>{product.name}</h3>

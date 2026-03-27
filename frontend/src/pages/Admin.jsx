@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductTable from '../components/admin/ProductTable';
-import { products } from '../data/mockData';
+import * as adminService from '../services/adminProductService';
 import '../components/admin/Admin.css';
 
 const Admin = () => {
@@ -67,14 +67,14 @@ const Admin = () => {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{background: 'rgba(76, 209, 55, 0.1)', color: '#4cd137'}}><i className="fas fa-shopping-bag"></i></div>
+          <div className="stat-icon" style={{ background: 'rgba(76, 209, 55, 0.1)', color: '#4cd137' }}><i className="fas fa-shopping-bag"></i></div>
           <div className="stat-info">
             <h3>12</h3>
             <p>Active Orders</p>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{background: 'rgba(156, 136, 255, 0.1)', color: '#9c88ff'}}><i className="fas fa-users"></i></div>
+          <div className="stat-icon" style={{ background: 'rgba(156, 136, 255, 0.1)', color: '#9c88ff' }}><i className="fas fa-users"></i></div>
           <div className="stat-info">
             <h3>156</h3>
             <p>Total Users</p>

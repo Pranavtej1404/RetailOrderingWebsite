@@ -1,12 +1,13 @@
 package com.retail.app.security;
 
-import com.retail.app.service.CustomUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -31,7 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -44,21 +45,21 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(unauthorizedHandler()) // 401 handler
-                        .accessDeniedHandler(accessDeniedHandler())     // 403 handler
+                        .accessDeniedHandler(accessDeniedHandler()) // 403 handler
                 )
                 .authorizeHttpRequests(auth -> auth
                         // Public Endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**", "/api/brands/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories", "/api/brands")
+                        .permitAll()
                         .requestMatchers("/api/cart/**").permitAll()
-                        
+
                         // Finalized Protected Endpoints
                         .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                        
+
                         // Default Protected Endpoints (Profile, History, etc.)
-                        .anyRequest().authenticated()
-                );
+                        .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -72,9 +73,11 @@ public class SecurityConfig {
     @Bean
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of("http://localhost:3000", "http://localhost:5173")); // Vite + CRA
+        configuration.setAllowedOrigins(java.util.List.of("http://localhost:3000", "http://localhost:5173")); // Vite +
+                                                                                                              // CRA
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "X-Requested-With"));
+        configuration
+                .setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "X-Requested-With", "X-Cart-Id"));
         configuration.setAllowCredentials(true);
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -89,7 +92,8 @@ public class SecurityConfig {
         return (request, response, authException) -> {
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"Access Denied: Invalid or missing token.\"}");
+            response.getWriter()
+                    .write("{\"error\": \"Unauthorized\", \"message\": \"Access Denied: Invalid or missing token.\"}");
         };
     }
 
@@ -101,14 +105,15 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"Access Denied: You do not have permission to access this resource.\"}");
+            response.getWriter().write(
+                    "{\"error\": \"Forbidden\", \"message\": \"Access Denied: You do not have permission to access this resource.\"}");
         };
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        // SB4 - Constructor injection is safer in SS7
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

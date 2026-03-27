@@ -9,14 +9,26 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser();
-    setUser(currentUser);
+    if (currentUser) {
+      console.log('Restoring user session:', currentUser.username);
+      setUser(currentUser);
+    }
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
-    const data = await AuthService.login(email, password);
-    setUser(data.user);
+  const login = async (username, password) => {
+    const data = await AuthService.login(username, password);
+    const user = {
+      username: data.username,
+      email: data.email,
+      role: data.role
+    };
+    setUser(user);
     return data;
+  };
+
+  const register = async (username, email, password) => {
+    return await AuthService.register(username, email, password);
   };
 
   const logout = () => {
@@ -25,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

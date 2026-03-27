@@ -12,7 +12,6 @@ public class ProductResponse {
     private String categoryName;
     private Long brandId;
     private String brandName;
-    private String imageUrl;
     private Integer stockQuantity;
     private LocalDateTime createdAt;
 
@@ -80,13 +79,6 @@ public class ProductResponse {
         this.brandName = brandName;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public Integer getStockQuantity() {
         return stockQuantity;
