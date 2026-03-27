@@ -1,16 +1,34 @@
 package com.retail.app.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
-public class ProductRequest {
+public class ProductUpdateRequest {
+    @NotBlank(message = "Product name is required")
     private String name;
+
     private String description;
+
+    @NotNull(message = "Price is required")
+    @Positive(message = "Price must be greater than zero")
     private BigDecimal price;
+
+    @NotNull(message = "Category ID is required")
     private Long categoryId;
+
+    @NotNull(message = "Brand ID is required")
     private Long brandId;
+
     private String imageUrl;
+
+    @NotNull(message = "Stock quantity is required")
+    @PositiveOrZero(message = "Stock quantity cannot be negative")
     private Integer stockQuantity;
 
+    // Getters and Setters
     public String getName() {
         return name;
     }

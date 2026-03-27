@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useAppContext } from '../context/AppContext';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { getCartTotals } = useCart();
-  const { itemsCount } = getCartTotals();
+  const { state } = useAppContext();
+  const cartCount = state.cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <nav className="navbar glass">
@@ -24,7 +24,7 @@ const Navbar = () => {
           <div className="nav-actions">
             <Link to="/cart" className="cart-btn" onClick={() => setIsMenuOpen(false)}>
               <i className="fas fa-shopping-cart"></i>
-              <span className="cart-count">{itemsCount}</span>
+              <span className="cart-count">{cartCount}</span>
             </Link>
             <Link to="/login" className="login-btn btn-primary" onClick={() => setIsMenuOpen(false)}>Login</Link>
           </div>
