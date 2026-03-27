@@ -1,11 +1,11 @@
 package com.retail.app.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "brands")
-public class Brand {
+public class Brand implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,9 +13,6 @@ public class Brand {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
-    private List<Product> products;
 
     public Brand() {
     }
@@ -38,13 +35,5 @@ public class Brand {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 }
