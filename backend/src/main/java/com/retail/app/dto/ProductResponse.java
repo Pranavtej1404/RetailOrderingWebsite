@@ -16,7 +16,6 @@ public class ProductResponse {
     private Integer stockQuantity;
     private LocalDateTime createdAt;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
