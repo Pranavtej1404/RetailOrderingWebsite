@@ -2,25 +2,40 @@ import React from 'react';
 import CartItemCard from '../components/cart/CartItemCard';
 import CartSummary from '../components/cart/CartSummary';
 import EmptyCartState from '../components/cart/EmptyCartState';
-import { mockCartItems } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import '../components/cart/Cart.css';
 
 const Cart = () => {
-  const cartItems = mockCartItems;
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const { state, dispatch } = useAppContext();
+  const { cart } = state;
+
+  const handleRemove = (id) => {
+    dispatch({ type: 'REMOVE_FROM_CART', payload: id });
+  };
+
+  const handleUpdateQuantity = (id, newQty) => {
+    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQty } });
+  };
+
+  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="cart-page-wrapper">
       <div className="container cart-layout">
-        {cartItems.length > 0 ? (
+        {cart.length > 0 ? (
           <>
             <div className="cart-items-section">
               <div className="cart-header">
-                <h1>Shopping Cart <span>({cartItems.length} items)</span></h1>
+                <h1>Shopping Cart <span>({cart.length} items)</span></h1>
               </div>
               <div className="cart-items-list">
-                {cartItems.map(item => (
-                  <CartItemCard key={item.id} item={item} />
+                {cart.map(item => (
+                  <CartItemCard 
+                    key={item.id} 
+                    item={item} 
+                    onRemove={handleRemove}
+                    onUpdateQuantity={handleUpdateQuantity}
+                  />
                 ))}
               </div>
             </div>
