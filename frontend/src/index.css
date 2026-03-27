@@ -1,20 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
 
 :root {
-  --primary: #f82d2d;
-  --primary-hover: #d11f1f;
-  --secondary: #212121;
-  --accent: #ffb703;
-  --background: #ffffff;
-  --surface: #f9f9f9;
-  --text-main: #1a1a1a;
-  --text-muted: #666666;
-  --border: #e0e0e0;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
-  --radius: 12px;
-  --radius-lg: 20px;
-  --transition: all 0.3s ease;
+  --primary: #ff4757;
+  --primary-hover: #ff6b81;
+  --secondary: #2f3542;
+  --accent: #ffa502;
+  --background: #f1f2f6;
+  --surface: rgba(255, 255, 255, 0.9);
+  --text-main: #2f3542;
+  --text-muted: #747d8c;
+  --border: rgba(0, 0, 0, 0.05);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
+  --radius: 16px;
+  --radius-lg: 24px;
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
